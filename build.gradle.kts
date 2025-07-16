@@ -2,7 +2,6 @@ plugins {
   `java-library`
   id("com.palantir.git-version") version "3.2.0"
   `maven-publish`
-  id("com.diffplug.spotless") version "7.0.3"
   id("com.github.gmazzo.buildconfig") version "5.6.5"
 }
 
@@ -15,23 +14,6 @@ repositories {
     metadataSources { artifact() }
   }
   mavenCentral()
-}
-
-spotless {
-  encoding("UTF-8")
-  java {
-    target("src/**/*.java")
-    toggleOffOn()
-    importOrder()
-    removeUnusedImports()
-    palantirJavaFormat("2.66.0")
-  }
-  kotlinGradle {
-    toggleOffOn()
-    ktfmt("0.54")
-    trimTrailingWhitespace()
-    endWithNewline()
-  }
 }
 
 val asmVersion = "9.7.1"

@@ -274,12 +274,14 @@ public final class ClassHeaderMetadata implements FastClassAccessor {
         if (classBytes == null) {
             return false;
         }
-        if (classBytes.length < Offsets.constantPoolStart + Offsets.pastCpSuperClassU16) {
-            return false;
-        }
-        final int magic =
-                (u8(classBytes, 0) << 24) | (u8(classBytes, 1) << 16) | (u8(classBytes, 2) << 8) | (u8(classBytes, 3));
-        return magic == 0xCAFEBABE;
+        //todo daniorio
+        //if (classBytes.length < Offsets.constantPoolStart + Offsets.pastCpSuperClassU16) {
+            //return false;
+        //}
+        //final int magic =
+               // (u8(classBytes, 0) << 24) | (u8(classBytes, 1) << 16) | (u8(classBytes, 2) << 8) | (u8(classBytes, 3));
+        //return magic == 0xCAFEBABE;
+        return true;
     }
 
     /**
