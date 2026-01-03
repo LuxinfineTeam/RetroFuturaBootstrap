@@ -1,7 +1,5 @@
 plugins {
   `java-library`
-  id("com.palantir.git-version") version "3.2.0"
-  `maven-publish`
   id("com.github.gmazzo.buildconfig") version "5.6.5"
 }
 
@@ -16,11 +14,11 @@ repositories {
   mavenCentral()
 }
 
-val asmVersion = "9.7.1"
+val asmVersion = "9.9.1"
 
 dependencies {
-  testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
-  testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+  //testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+  //testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
   compileOnly("me.eigenraven.java8unsupported:java-8-unsupported-shim:1.0.0")
   compileOnlyApi("org.jetbrains:annotations:24.1.0")
@@ -34,10 +32,7 @@ dependencies {
   api("org.apache.logging.log4j:log4j-api:2.0-beta9-fixed")
 }
 
-val gitVersion: groovy.lang.Closure<String> by extra
-val envVersion: String? = System.getenv("VERSION")
-
-version = envVersion ?: gitVersion()
+version = "1.0.13"
 
 buildConfig {
   buildConfigField("String", "VERSION", provider { "\"${project.version}\"" })
@@ -50,13 +45,6 @@ lateinit var java9: SourceSet
 
 // Apply a specific Java toolchain to ease working on different environments.
 java {
-  toolchain {
-    languageVersion.set(JavaLanguageVersion.of(17))
-    vendor.set(JvmVendorSpec.AZUL)
-  }
-  withSourcesJar()
-  withJavadocJar()
-
   sourceSets {
     // Stub classes, not actually included in the jar
     main {}
@@ -65,9 +53,6 @@ java {
           compileClasspath +=
               this@sourceSets.main.get().output + files(configurations.compileClasspath)
         }
-    test {
-      runtimeClasspath = files(this@test.output, tasks.jar, configurations.testRuntimeClasspath)
-    }
   }
 }
 
@@ -89,57 +74,7 @@ tasks.jar {
   manifest.attributes["Implementation-Vendor"] = "GTNewHorizons"
 }
 
-tasks.named<Jar>("sourcesJar").configure {
-  into("META-INF/versions/9") { from(java9.java.sourceDirectories) }
-}
-
 tasks.processResources {
   inputs.property("version", project.version.toString())
   filesMatching("**/*.properties") { expand("version" to project.version.toString()) }
-}
-
-tasks.withType<Javadoc>().configureEach {
-  this.javadocTool.set(
-      javaToolchains.javadocToolFor {
-        languageVersion.set(JavaLanguageVersion.of(17))
-        vendor.set(JvmVendorSpec.AZUL)
-      })
-  with(options as StandardJavadocDocletOptions) {
-    links("https://docs.oracle.com/en/java/javase/21/docs/api/")
-    addStringOption("Xdoclint:all,-missing", "-quiet")
-  }
-}
-
-tasks.named<Test>("test") { useJUnitPlatform() }
-
-val test8 =
-    tasks.register<Test>("test8") {
-      group = "Verification tasks"
-      description = "Run the test suite on Java 8."
-
-      useJUnitPlatform()
-      this.classpath = sourceSets.test.get().runtimeClasspath
-      this.testClassesDirs = sourceSets.test.get().output.classesDirs
-      this.javaLauncher =
-          javaToolchains.launcherFor {
-            languageVersion = JavaLanguageVersion.of(8)
-            vendor = JvmVendorSpec.AZUL
-          }
-    }
-
-tasks.check { dependsOn(test8) }
-
-publishing {
-  publications { create<MavenPublication>("rfbMaven") { from(components["java"]) } }
-
-  repositories {
-    maven {
-      url = uri("https://nexus.gtnewhorizons.com/repository/releases/")
-      isAllowInsecureProtocol = true
-      credentials {
-        username = System.getenv("MAVEN_USER") ?: "NONE"
-        password = System.getenv("MAVEN_PASSWORD") ?: "NONE"
-      }
-    }
-  }
 }
