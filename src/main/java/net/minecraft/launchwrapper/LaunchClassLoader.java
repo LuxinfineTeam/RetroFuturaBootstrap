@@ -149,7 +149,9 @@ public class LaunchClassLoader extends URLClassLoaderWithUtilities implements Ex
                 "org.slf4j.",
                 "com.gtnewhorizons.retrofuturabootstrap.",
                 //TODO LuxinfineTeam
-                "jdk."
+                "jdk.",
+                "pro.gravit.launcher.",
+                "pro.gravit.utils."
                 //
         ));
         transformerExceptions.addAll(Arrays.asList(
