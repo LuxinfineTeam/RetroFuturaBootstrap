@@ -147,14 +147,24 @@ public class LaunchClassLoader extends URLClassLoaderWithUtilities implements Ex
                 "org.objectweb.asm.",
                 "net.minecraft.launchwrapper.",
                 "org.slf4j.",
-                "com.gtnewhorizons.retrofuturabootstrap."));
+                "com.gtnewhorizons.retrofuturabootstrap.",
+                //TODO LuxinfineTeam
+                "jdk."
+                //
+        ));
         transformerExceptions.addAll(Arrays.asList(
                 "javax.",
                 "argo.",
                 "com.google.common.",
                 "org.bouncycastle.",
                 "net.minecraft.launchwrapper.injector.",
-                "com.gtnewhorizons.retrofuturabootstrap."));
+                "com.gtnewhorizons.retrofuturabootstrap.",
+                //TODO LuxinfineTeam
+                "scala.",
+                "kotlin.",
+                "kotlinx."
+                //
+        ));
     }
 
     /**
