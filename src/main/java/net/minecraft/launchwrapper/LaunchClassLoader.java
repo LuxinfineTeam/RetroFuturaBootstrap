@@ -256,7 +256,7 @@ public class LaunchClassLoader extends URLClassLoaderWithUtilities implements Ex
         final String packageName = (lastDot == -1) ? "" : untransformedName.substring(0, lastDot);
         final String classPath = untransformedName.replace('.', '/') + ".class";
         final URLConnection connection = findCodeSourceConnectionFor(classPath);
-        final Package pkg;
+        Package pkg = null;
         final CodeSource codeSource;
         Manifest manifest = null;
         byte[] classBytes = null;
@@ -280,11 +280,9 @@ public class LaunchClassLoader extends URLClassLoaderWithUtilities implements Ex
                 final URL classSourceUrl = runTransformers ? jarConnection.getURL() : jarConnection.getJarFileURL();
                 codeSource = new CodeSource(classSourceUrl, codeSigners);
             } else {
-                pkg = getAndVerifyPackage(packageName, null, null);
                 codeSource = connection == null ? null : new CodeSource(connection.getURL(), (CodeSigner[]) null);
             }
         } else {
-            pkg = null;
             final URL url = connection == null ? null : connection.getURL();
             codeSource = url == null ? null : new CodeSource(url, (CodeSigner[]) null);
         }
@@ -339,6 +337,9 @@ public class LaunchClassLoader extends URLClassLoaderWithUtilities implements Ex
         }
         if (Main.cfgDumpLoadedClasses) {
             Main.dumpClass(this.getClassLoaderName(), transformedName, classBytes);
+        }
+        if (!packageName.isEmpty() && pkg == null) {
+            getAndVerifyPackage(packageName, null, null);
         }
         Class<?> result = defineClass(transformedName, classBytes, 0, classBytes.length, codeSource);
         cachedClasses.put(transformedName, result);
