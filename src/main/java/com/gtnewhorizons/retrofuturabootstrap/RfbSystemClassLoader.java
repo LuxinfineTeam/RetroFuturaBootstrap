@@ -81,7 +81,10 @@ public final class RfbSystemClassLoader extends URLClassLoaderWithUtilities impl
                 "org.objectweb.asm.",
                 "LZMA.",
                 "org.slf4j.",
-                "com.gtnewhorizons.retrofuturabootstrap."));
+                "com.gtnewhorizons.retrofuturabootstrap.",
+                "pro.gravit.launcher.",
+                "pro.gravit.utils."
+        ));
     }
 
     /** Invoked by Java itself */
